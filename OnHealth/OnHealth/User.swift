@@ -26,4 +26,12 @@ class User {
         return id
     }
     
+    func getFirstName() -> String {
+        return firstName
+    }
+    
+    func getLastName() -> String {
+        return lastName
+    }
+    
 }
