@@ -21,7 +21,9 @@ class Patient: User {
             "numOfTests" : String(numOfTests),
             "numOfRelIds" : String(self.getNumOfRelIds()),
             "firstName" : self.getFirstName(),
-            "lastName" : self.getLastName()
+            "lastName" : self.getLastName(),
+            "dob" : String(self.getDob()),
+            "gender" : String(self.getGender())
         ]
         UserHandler.updateUser(userDict, id:self.getId())
     }
