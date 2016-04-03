@@ -5,7 +5,10 @@
 
 target 'OnHealth' do
 
+use_frameworks!
+
 pod 'Firebase', '>= 2.5.1'
+pod 'SwiftRequest', '0.0.4'
 
 end
 

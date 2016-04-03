@@ -14,15 +14,25 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>SwiftRequest.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>20A500CDFB6145A8764290D95491A580</key>
+		<key>4ED81C835BDC65D1F3B9E942E2905F6C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>569735B422E0E4CEEFC5C6955AFDE3A5</key>
+		<key>B7AC9326D819482593FE118E915409D7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C387C26575506B42E94BF4C66E0DEBC2</key>
 		<dict>
 			<key>primary</key>
 			<true/>

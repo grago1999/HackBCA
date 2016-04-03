@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '491125536E5E28A42F944B5A'
-               BlueprintName = 'Pods-OnHealth'
+               BlueprintIdentifier = '227217261F8ECA063C7E6387'
+               BlueprintName = 'SwiftRequest'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'Pods_OnHealth.framework'>
+               BuildableName = 'SwiftRequest.framework'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>

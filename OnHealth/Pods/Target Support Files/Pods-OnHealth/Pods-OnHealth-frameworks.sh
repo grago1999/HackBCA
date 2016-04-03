@@ -82,3 +82,12 @@ strip_invalid_archs() {
   fi
 }
 
+
+if [[ "$CONFIGURATION" == "Debug" ]]; then
+  install_framework "Pods-OnHealth/Firebase.framework"
+  install_framework "Pods-OnHealth/SwiftRequest.framework"
+fi
+if [[ "$CONFIGURATION" == "Release" ]]; then
+  install_framework "Pods-OnHealth/Firebase.framework"
+  install_framework "Pods-OnHealth/SwiftRequest.framework"
+fi

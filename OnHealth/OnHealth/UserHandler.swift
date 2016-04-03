@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Firebase
+import SwiftRequest
 
 class UserHandler {
     
@@ -240,34 +242,25 @@ class UserHandler {
         return searchEmail
     }
     
-    static func sendTwillioAlert() {
+    static func sendTwillioAlert(toPhone:String) {
+        let swiftRequest = SwiftRequest();
         
-        let twilioSID = "SK0d8575b1db7cc3f7fedf784dc6e9d922"
-        let twilioSecret = "M3xiBJcE8G8U1tAcL0gVeHc6XRnWQRIm"
+        let data = [
+            "To" : toPhone,
+            "From" : "+16094512077",
+            "Body" : "Hello World"
+        ];
         
-        //Note replace + = %2B , for To and From phone number
-        let fromNumber = "+16094512077"// actual number is +14803606445
-        let toNumber = "+17188735824"// actual number is +919152346132
-        let message = "Hey "
-        
-        // Build the request
-         let request = NSMutableURLRequest(URL: NSURL(string:"https://\(twilioSID):\(twilioSecret)@api.twilio.com/2010-04-01/Accounts/\(twilioSID)/SMS/Messages")!)
-        request.HTTPMethod = "POST"
-        request.HTTPBody = "From=\(fromNumber)&To=\(toNumber)&Body=\(message)".dataUsingEncoding(NSUTF8StringEncoding)
-        
-        // Build the completion block and send the request
-        let session = NSURLSession.sharedSession()
-        session.dataTaskWithRequest(request, completionHandler: { (data, response, error) in
-            print("Finished")
-            if let data = data, responseDetails = NSString(data: data, encoding: NSUTF8StringEncoding) {
-                // Success
-                print("Response: \(responseDetails)")
-            } else {
-                // Failure
-                print("Error: \(error)")
-            }
-        }).resume()
-        
+        swiftRequest.post("https://api.twilio.com/2010-04-01/Accounts/SK0d8575b1db7cc3f7fedf784dc6e9d922/Messages",
+            auth: ["username" : "M3xiBJcE8G8U1tAcL0gVeHc6XRnWQRIm", "password" : "6ec5035e600ce0ccc596b98b94baeb02"],
+            data: data,
+            callback: {err, response, body in
+                if err == nil {
+                    print("Success: \(response)")
+                } else {
+                    print("Error: \(err)")
+                }
+        });
     }
     
 }
