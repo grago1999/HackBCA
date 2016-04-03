@@ -55,8 +55,8 @@ class UserHandler {
                                 UserHandler.getRelId(authData.uid, index:i).observeSingleEventOfType(.Value, withBlock: { snapshot in
                                     relIds.append(snapshot.value.objectForKey("relId") as! String)
                                     continueUserSetup(authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:relIds, type:type)
-                                }, withCancelBlock: { error in
-                                    print(error.description)
+                                    }, withCancelBlock: { error in
+                                        print(error.description)
                                 })
                             }
                         } else {
@@ -146,6 +146,44 @@ class UserHandler {
     
     static func getRelId(id:String, index:Int) -> Firebase {
         return Firebase(url:"\(urlStr)/users/\(id)/RelIds/\(index))")
+    }
+    
+    static func setNewRelId(id:String, index:Int) -> Firebase {
+        return Firebase(url:"\(urlStr)/users/\(id)/RelIds/\(index))")
+    }
+    
+    static func getEmailId(email:String) -> Firebase {
+        return Firebase(url:"\(urlStr)/emails/\(email)")
+    }
+    
+    static func addRelIdByEmail(email:String) {
+        UserHandler.getEmailId(email).observeSingleEventOfType(.Value, withBlock: { snapshot in
+            let id = snapshot.value.objectForKey("id") as! String
+            UserHandler.getUserRef(id).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                let numOfRelIdsStr = snapshot.value.objectForKey("numOfRelIds") as! String
+                let relDict = ["id" : (currentUser?.getId())! as String]
+                let userDict = [
+                    "firstName" : snapshot.value.objectForKey("firstName") as! String,
+                    "lastName" : snapshot.value.objectForKey("lastName") as! String,
+                    "numOfRelIds" : String(Int(numOfRelIdsStr)!+1) as! String,
+                    "numOfTests" : snapshot.value.objectForKey("lastName") as! String,
+                    "type" : snapshot.value.objectForKey("type") as! String,
+                ]
+                setNewRelId(id, index:Int(numOfRelIdsStr)!+1).setValue(relDict)
+                setNewRelId((currentUser?.getId())!, index:Int((currentUser?.getNumOfRelIds())!)!)
+                getUserRef(id).setValue(userDict)
+            }, withCancelBlock: { error in
+                print(error.description)
+            })
+        }, withCancelBlock: { error in
+            print(error.description)
+        })
+    }
+    
+    static func alterEmail(email:String) -> String {
+        var searchEmail = email.stringByReplacingOccurrencesOfString("@", withString: " ", options:NSStringCompareOptions.LiteralSearch, range:nil)
+        searchEmail = searchEmail.stringByReplacingOccurrencesOfString(".", withString: " ", options:NSStringCompareOptions.LiteralSearch, range:nil)
+        return searchEmail
     }
     
 }
