@@ -37,34 +37,54 @@ class UserHandler {
                 var type:String = ""
                 var firstName:String = ""
                 var lastName:String = ""
+                var numOfRelIds:String = ""
+                var relIds:[String] = []
                 getUserRef(authData.uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
                     if hasSetUser {
                         firstName = (currentUser?.getFirstName())!
                         lastName = (currentUser?.getLastName())!
+                        numOfRelIds = "0"
+                        continueUserSetup(authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:relIds, type:type)
                     } else {
                         type = snapshot.value.objectForKey("type") as! String
                         firstName = snapshot.value.objectForKey("firstName") as! String
                         lastName = snapshot.value.objectForKey("lastName") as! String
-                    }
-                    hasSetUser = true
-                    if type == "0" {
-                        currentUser = Patient(id:authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName)
-                        UserHandler.getUserRef(authData.uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                            if let patient = currentUser as? Patient {
-                                let numOfTestsStr = snapshot.value.objectForKey("numOfTests") as! String
-                                let numOfTests:Int? = Int(numOfTestsStr)
-                                patient.setNumOfTests(numOfTests!)
+                        numOfRelIds = snapshot.value.objectForKey("numOfRelIds") as! String
+                        if numOfRelIds != "0" {
+                            for i in 0...(Int(numOfRelIds)!-1) {
+                                UserHandler.getRelId(authData.uid, index:i).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                                    relIds.append(snapshot.value.objectForKey("relId") as! String)
+                                    continueUserSetup(authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:relIds, type:type)
+                                }, withCancelBlock: { error in
+                                    print(error.description)
+                                })
                             }
-                        }, withCancelBlock: { error in
-                            print(error.description)
-                        })
-                    } else {
-                        currentUser = CareTaker(id:authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName)
+                        } else {
+                            continueUserSetup(authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:relIds, type:type)
+                        }
                     }
                 }, withCancelBlock: { error in
                     print(error.description)
                 })
             }
+        }
+    }
+    
+    static func continueUserSetup(id:String, email:String, pass:String, firstName:String, lastName:String, numOfRelIds:String, relIds:[String], type:String) {
+        hasSetUser = true
+        if type == "0" {
+            currentUser = Patient(id:id, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:relIds)
+            UserHandler.getUserRef(id).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                if let patient = currentUser as? Patient {
+                    let numOfTestsStr = snapshot.value.objectForKey("numOfTests") as! String
+                    let numOfTests:Int? = Int(numOfTestsStr)
+                    patient.setNumOfTests(numOfTests!)
+                }
+            }, withCancelBlock: { error in
+                print(error.description)
+            })
+        } else {
+            currentUser = CareTaker(id:id, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:relIds)
         }
     }
     
@@ -78,10 +98,11 @@ class UserHandler {
                 let userDict = [
                     "type" : String(type),
                     "numOfTests" : "0",
+                    "numOfRelIds" : "0",
                     "firstName" : firstName,
                     "lastName" : lastName
                 ]
-                currentUser = User(id:uid!, email:email, pass:pass, firstName:firstName, lastName:lastName)
+                currentUser = User(id:uid!, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:"0", relIds:[])
                 hasSetUser = true
                 updateUser(userDict, id:uid!)
                 self.attemptLogin(email, pass:pass)
@@ -123,13 +144,8 @@ class UserHandler {
         return Firebase(url:"\(urlStr)/users/\(id)/PastTests/\(testId))")
     }
     
-    static func getCareTakerIdsRef(id:String) -> Firebase {
-        return Firebase(url:"\(urlStr)/users/\(id)/CareTakerIds")
+    static func getRelId(id:String, index:Int) -> Firebase {
+        return Firebase(url:"\(urlStr)/users/\(id)/RelIds/\(index))")
     }
-    
-    static func getPatientIds(id:String) -> Firebase {
-        return Firebase(url:"\(urlStr)/users/\(id)/PatientIds")
-    }
-    
     
 }

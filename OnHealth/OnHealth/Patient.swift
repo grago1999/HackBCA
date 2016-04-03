@@ -12,7 +12,6 @@ class Patient: User {
     
     private var numOfTests:Int = 0
     private var pastTests:[TestData] = []
-    private var careTakerIds:[String] = []
     
     func updatePatientAfterNewTest(newTest:TestData) {
         pastTests.append(newTest)
@@ -20,18 +19,11 @@ class Patient: User {
         let userDict = [
             "type" : "0",
             "numOfTests" : String(numOfTests),
+            "numOfRelIds" : String(self.getNumOfRelIds()),
             "firstName" : self.getFirstName(),
             "lastName" : self.getLastName()
         ]
         UserHandler.updateUser(userDict, id:self.getId())
-    }
-    
-    func setCareTakerIds(careTakerIds:[String]) {
-        self.careTakerIds = careTakerIds
-    }
-    
-    func getCareTakerIds() -> [String] {
-        return careTakerIds
     }
     
     func setNumOfTests(numOfTests:Int) {

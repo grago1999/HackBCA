@@ -13,19 +13,27 @@ class User {
     private var pass:String
     private var firstName:String
     private var lastName:String
+    private var numOfRelIds:String
+    private var relIds:[String]
     
-    init(id:String, email:String, pass:String, firstName:String, lastName:String) {
+    init(id:String, email:String, pass:String, firstName:String, lastName:String, numOfRelIds:String, relIds:[String]) {
         self.id = id
         self.email = email
         self.pass = pass
         self.firstName = firstName
         self.lastName = lastName
+        self.numOfRelIds = numOfRelIds
+        self.relIds = relIds
         
         print("User: "+firstName+" "+lastName+" "+id)
-        
-        if let care = self as? CareTaker {
-            print(care.getPatientTestData(care.getPatientIds[0]))
-        }
+    }
+    
+    func getRelIds() -> [String] {
+        return relIds
+    }
+    
+    func getNumOfRelIds() -> String {
+        return numOfRelIds
     }
     
     func getId() -> String {
