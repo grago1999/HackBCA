@@ -57,7 +57,9 @@ class UserHandler {
                         if numOfRelIds != "0" {
                             for i in 0...(Int(numOfRelIds)!-1) {
                                 UserHandler.getRelId(authData.uid, index:i).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                                    relIds.append(snapshot.value.objectForKey("relId") as! String)
+                                    print(UserHandler.getRelId(authData.uid, index:i))
+                                    print(snapshot.value)
+                                    relIds.append(snapshot.value.objectForKey("id") as! String)
                                     continueUserSetup(authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:relIds, type:type)
                                     }, withCancelBlock: { error in
                                         print(error.description)
@@ -156,19 +158,19 @@ class UserHandler {
         if let patient = currentUser as? Patient {
             testId = patient.getPastTests().count-1
         }
-        return Firebase(url:"\(urlStr)/users/\(id)/PastTests/\(testId))")
+        return Firebase(url:"\(urlStr)/users/\(id)/PastTests/\(testId)")
     }
     
     static func getPastTestRef(id:String, testId:Int) -> Firebase {
-        return Firebase(url:"\(urlStr)/users/\(id)/PastTests/\(testId))")
+        return Firebase(url:"\(urlStr)/users/\(id)/PastTests/\(testId)")
     }
     
     static func getRelId(id:String, index:Int) -> Firebase {
-        return Firebase(url:"\(urlStr)/users/\(id)/RelIds/\(index))")
+        return Firebase(url:"\(urlStr)/users/\(id)/RelIds/\(index)")
     }
     
     static func setNewRelId(id:String, index:Int) -> Firebase {
-        return Firebase(url:"\(urlStr)/users/\(id)/RelIds/\(index))")
+        return Firebase(url:"\(urlStr)/users/\(id)/RelIds/\(index)")
     }
     
     static func getEmailId(email:String) -> Firebase {
