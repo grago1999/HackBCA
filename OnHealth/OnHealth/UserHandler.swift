@@ -241,29 +241,33 @@ class UserHandler {
     }
     
     static func sendTwillioAlert() {
-        let twilioSID = "SK6188016aa946a7afc8786929acd7dcab"
-        let twilioSecret = "QVTqy9AFcnRx3jJ87hCwTRKW15bPERbf"
-        let fromNumber = "%2B16094512077"
-        let toNumber = "%2B17188735824"
-        let message = "Twillio is dank memes"
         
-        var swiftRequest = SwiftRequest();
+        let twilioSID = "SK0d8575b1db7cc3f7fedf784dc6e9d922"
+        let twilioSecret = "M3xiBJcE8G8U1tAcL0gVeHc6XRnWQRIm"
         
-        var data = [
-            "To" : "+15555555555",
-            "From" : "+15555556666",
-            "Body" : "Hello World"
-        ];
+        //Note replace + = %2B , for To and From phone number
+        let fromNumber = "+16094512077"// actual number is +14803606445
+        let toNumber = "+17188735824"// actual number is +919152346132
+        let message = "Hey "
         
-        /*swiftRequest.post("https://api.twilio.com/2010-04-01/Accounts/[YOUR_ACCOUNT_SID]/Messages", auth: ["username" : "[YOUR_ACCOUNT_SID]", "password" : "YOUR_AUTH_TOKEN"]
-            data: data,
-            callback: {err, response, body in
-                if err == nil {
-                    println("Success: \(response)")
-                } else {
-                    println("Error: \(err)")
-                }
-        });*/
+        // Build the request
+         let request = NSMutableURLRequest(URL: NSURL(string:"https://\(twilioSID):\(twilioSecret)@api.twilio.com/2010-04-01/Accounts/\(twilioSID)/SMS/Messages")!)
+        request.HTTPMethod = "POST"
+        request.HTTPBody = "From=\(fromNumber)&To=\(toNumber)&Body=\(message)".dataUsingEncoding(NSUTF8StringEncoding)
+        
+        // Build the completion block and send the request
+        let session = NSURLSession.sharedSession()
+        session.dataTaskWithRequest(request, completionHandler: { (data, response, error) in
+            print("Finished")
+            if let data = data, responseDetails = NSString(data: data, encoding: NSUTF8StringEncoding) {
+                // Success
+                print("Response: \(responseDetails)")
+            } else {
+                // Failure
+                print("Error: \(error)")
+            }
+        }).resume()
+        
     }
     
 }
