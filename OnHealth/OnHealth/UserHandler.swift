@@ -33,6 +33,7 @@ class UserHandler {
                 }
             } else {
                 print("Logged in")
+                var type:String = ""
                 var firstName:String = ""
                 var lastName:String = ""
                 getUserRef(authData.uid).observeEventType(.Value, withBlock: { snapshot in
@@ -40,18 +41,17 @@ class UserHandler {
                         firstName = user.getFirstName()
                         lastName = user.getLastName()
                     } else {
+                        type = snapshot.value.objectForKey("type") as! String
                         firstName = snapshot.value.objectForKey("firstName") as! String
                         lastName = snapshot.value.objectForKey("lastName") as! String
                     }
                 }, withCancelBlock: { error in
                     print(error.description)
                 })
-                currentUser = User(id:authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName)
-                let date = NSDate()
-                let timestamp = Int(date.timeIntervalSince1970*1000)
-                let tempTest = TestData(score:9, date:timestamp, type:1)
-                if let patient = currentUser as? Patient {
-                    patient.updatePatientAfterNewTest(tempTest)
+                if type == "0" {
+                    currentUser = Patient(id:authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName)
+                } else {
+                    currentUser = CareTaker(id:authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName)
                 }
             }
         }
