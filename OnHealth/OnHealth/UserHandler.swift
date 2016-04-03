@@ -126,6 +126,19 @@ class UserHandler {
         })
     }
     
+    static func getPatientInfo(id:String) {
+        UserHandler.getUserRef(id).observeSingleEventOfType(.Value, withBlock: { snapshot in
+            let firstName = snapshot.value.objectForKey("firstName") as! String
+            let lastName = snapshot.value.objectForKey("lastName") as! String
+            let numOfRelIds = snapshot.value.objectForKey("numOfRelIds") as! String
+            let numOfTests = snapshot.value.objectForKey("numOfTests") as! String
+            let patient = Patient(id:id, email:"", pass:"", firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:[])
+            patient.setNumOfTests(Int(numOfTests)!)
+        }, withCancelBlock: { error in
+            print(error.description)
+        })
+    }
+    
     static func getUserRef(id:String) -> Firebase {
         return Firebase(url:"\(urlStr)/users/\(id)")
     }
