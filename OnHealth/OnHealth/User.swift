@@ -20,6 +20,10 @@ class User {
         self.pass = pass
         self.firstName = firstName
         self.lastName = lastName
+        
+        if let careTaker = self as? CareTaker {
+            careTaker.getPatientTestData(careTaker.getPatientIds()[0])
+        }
     }
     
     func getId() -> String {

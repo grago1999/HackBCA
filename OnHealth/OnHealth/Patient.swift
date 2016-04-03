@@ -10,13 +10,16 @@ import UIKit
 
 class Patient: User {
     
+    private var numOfTests:Int = 0
     private var pastTests:[TestData] = []
     private var careTakerIds:[String] = []
     
     func updatePatientAfterNewTest(newTest:TestData) {
         pastTests.append(newTest)
+        numOfTests+=1
         let userDict = [
             "type" : "0",
+            "numOfTests" : String(numOfTests),
             "firstName" : self.getFirstName(),
             "lastName" : self.getLastName()
         ]
@@ -29,6 +32,10 @@ class Patient: User {
     
     func getCareTakerIds() -> [String] {
         return careTakerIds
+    }
+    
+    func setNumOfTests(numOfTests:Int) {
+        self.numOfTests = numOfTests
     }
     
     func setPastTests(pastTests:[TestData]) {

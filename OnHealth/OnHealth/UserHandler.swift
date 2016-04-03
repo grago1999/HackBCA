@@ -49,6 +49,15 @@ class UserHandler {
                     hasSetUser = true
                     if type == "0" {
                         currentUser = Patient(id:authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName)
+                        UserHandler.getUserRef(authData.uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                            if let patient = currentUser as? Patient {
+                                let numOfTestsStr = snapshot.value.objectForKey("numOfTests") as! String
+                                let numOfTests:Int? = Int(numOfTestsStr)
+                                patient.setNumOfTests(numOfTests!)
+                            }
+                        }, withCancelBlock: { error in
+                            print(error.description)
+                        })
                     } else {
                         currentUser = CareTaker(id:authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName)
                     }
@@ -68,6 +77,7 @@ class UserHandler {
                 print("Successfully created user account with uid: \(uid)")
                 let userDict = [
                     "type" : String(type),
+                    "numOfTests" : "0",
                     "firstName" : firstName,
                     "lastName" : lastName
                 ]
@@ -85,9 +95,10 @@ class UserHandler {
             if let patient = currentUser as? Patient {
                 let newTestDict = [
                     "score" : (patient.getPastTests().last?.getScore())! as Int,
+                    "date" : (patient.getPastTests().last?.getDate())! as Int,
                     "type" : (patient.getPastTests().last?.getType())! as Int
                 ]
-                getPastTestsRef(id, date:(patient.getPastTests().last?.getDate())!).setValue(newTestDict)
+                setNewPastTestRef(id).setValue(newTestDict)
             }
             if let careTaker = currentUser as? CareTaker {
                 
@@ -100,8 +111,16 @@ class UserHandler {
         return Firebase(url:"\(urlStr)/users/\(id)")
     }
     
-    static func getPastTestsRef(id:String, date:Int) -> Firebase {
-        return Firebase(url:"\(urlStr)/users/\(id)/PastTests/\(date))")
+    static func setNewPastTestRef(id:String) -> Firebase {
+        var testId:Int = 0
+        if let patient = currentUser as? Patient {
+            testId = patient.getPastTests().count-1
+        }
+        return Firebase(url:"\(urlStr)/users/\(id)/PastTests/\(testId))")
+    }
+    
+    static func getPastTestRef(id:String, testId:Int) -> Firebase {
+        return Firebase(url:"\(urlStr)/users/\(id)/PastTests/\(testId)")
     }
     
     static func getCareTakerIdsRef(id:String) -> Firebase {
