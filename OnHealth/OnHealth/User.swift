@@ -13,15 +13,19 @@ class User {
     private var pass:String
     private var firstName:String
     private var lastName:String
+    private var dob:String
+    private var gender:String
     private var numOfRelIds:String
     private var relIds:[String]
     
-    init(id:String, email:String, pass:String, firstName:String, lastName:String, numOfRelIds:String, relIds:[String]) {
+    init(id:String, email:String, pass:String, firstName:String, lastName:String, gender:String, dob:String, numOfRelIds:String, relIds:[String]) {
         self.id = id
         self.email = email
         self.pass = pass
         self.firstName = firstName
         self.lastName = lastName
+        self.gender = gender
+        self.dob = dob
         self.numOfRelIds = numOfRelIds
         self.relIds = relIds
         
@@ -46,6 +50,14 @@ class User {
     
     func getLastName() -> String {
         return lastName
+    }
+    
+    func getGender() -> Int {
+        return Int(gender)!
+    }
+    
+    func getDob() -> Int {
+        return Int(dob)!
     }
     
 }

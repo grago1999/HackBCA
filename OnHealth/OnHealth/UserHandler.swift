@@ -38,29 +38,33 @@ class UserHandler {
                 var firstName:String = ""
                 var lastName:String = ""
                 var numOfRelIds:String = ""
+                var gender:String = ""
+                var dob:String = ""
                 var relIds:[String] = []
                 getUserRef(authData.uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
                     if hasSetUser {
                         firstName = (currentUser?.getFirstName())!
                         lastName = (currentUser?.getLastName())!
                         numOfRelIds = "0"
-                        continueUserSetup(authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:relIds, type:type)
+                        continueUserSetup(authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:relIds, type:type)
                     } else {
                         type = snapshot.value.objectForKey("type") as! String
                         firstName = snapshot.value.objectForKey("firstName") as! String
                         lastName = snapshot.value.objectForKey("lastName") as! String
+                        gender = snapshot.value.objectForKey("gender") as! String
+                        dob = snapshot.value.objectForKey("dob") as! String
                         numOfRelIds = snapshot.value.objectForKey("numOfRelIds") as! String
                         if numOfRelIds != "0" {
                             for i in 0...(Int(numOfRelIds)!-1) {
                                 UserHandler.getRelId(authData.uid, index:i).observeSingleEventOfType(.Value, withBlock: { snapshot in
                                     relIds.append(snapshot.value.objectForKey("relId") as! String)
-                                    continueUserSetup(authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:relIds, type:type)
+                                    continueUserSetup(authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:relIds, type:type)
                                     }, withCancelBlock: { error in
                                         print(error.description)
                                 })
                             }
                         } else {
-                            continueUserSetup(authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:relIds, type:type)
+                            continueUserSetup(authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:relIds, type:type)
                         }
                     }
                 }, withCancelBlock: { error in
@@ -70,10 +74,10 @@ class UserHandler {
         }
     }
     
-    static func continueUserSetup(id:String, email:String, pass:String, firstName:String, lastName:String, numOfRelIds:String, relIds:[String], type:String) {
+    static func continueUserSetup(id:String, email:String, pass:String, firstName:String, lastName:String, gender:String, dob:String, numOfRelIds:String, relIds:[String], type:String) {
         hasSetUser = true
         if type == "0" {
-            currentUser = Patient(id:id, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:relIds)
+            currentUser = Patient(id:id, email:email, pass:pass, firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:relIds)
             UserHandler.getUserRef(id).observeSingleEventOfType(.Value, withBlock: { snapshot in
                 if let patient = currentUser as? Patient {
                     let numOfTestsStr = snapshot.value.objectForKey("numOfTests") as! String
@@ -84,11 +88,11 @@ class UserHandler {
                 print(error.description)
             })
         } else {
-            currentUser = CareTaker(id:id, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:relIds)
+            currentUser = CareTaker(id:id, email:email, pass:pass, firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:relIds)
         }
     }
     
-    static func registerUser(email:String, pass:String, firstName:String, lastName:String, type:Int) {
+    static func registerUser(email:String, pass:String, firstName:String, lastName:String, dob:Int, gender:Int, type:Int) {
         ref.createUser(email, password:pass, withValueCompletionBlock: { error, result in
             if error != nil {
                 print("Account was unable to be created")
@@ -100,9 +104,11 @@ class UserHandler {
                     "numOfTests" : "0",
                     "numOfRelIds" : "0",
                     "firstName" : firstName,
-                    "lastName" : lastName
+                    "lastName" : lastName,
+                    "gender" : String(gender),
+                    "dob" : String(dob)
                 ]
-                currentUser = User(id:uid!, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:"0", relIds:[])
+                currentUser = User(id:uid!, email:email, pass:pass, firstName:firstName, lastName:lastName, gender:String(gender), dob:String(dob), numOfRelIds:"0", relIds:[])
                 hasSetUser = true
                 getEmailId(alterEmail(email)).setValue(["id" : uid!])
                 updateUser(userDict, id:uid!)
@@ -132,7 +138,9 @@ class UserHandler {
             let lastName = snapshot.value.objectForKey("lastName") as! String
             let numOfRelIds = snapshot.value.objectForKey("numOfRelIds") as! String
             let numOfTests = snapshot.value.objectForKey("numOfTests") as! String
-            let patient = Patient(id:id, email:"", pass:"", firstName:firstName, lastName:lastName, numOfRelIds:numOfRelIds, relIds:[])
+            let gender = snapshot.value.objectForKey("gender") as! String
+            let dob = snapshot.value.objectForKey("dob") as! String
+            let patient = Patient(id:id, email:"", pass:"", firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:[])
             patient.setNumOfTests(Int(numOfTests)!)
         }, withCancelBlock: { error in
             print(error.description)
@@ -180,6 +188,8 @@ class UserHandler {
                         "numOfRelIds" : String(Int(numOfRelIdsStr)!+1) as String,
                         "numOfTests" : snapshot.value.objectForKey("lastName") as! String,
                         "type" : snapshot.value.objectForKey("type") as! String,
+                        "dob" : snapshot.value.objectForKey("dob") as! String,
+                        "gender" : snapshot.value.objectForKey("gender") as! String
                     ]
                     setNewRelId(id, index:Int(numOfRelIdsStr)!+1).setValue(relDict)
                     setNewRelId((currentUser?.getId())!, index:Int((currentUser?.getNumOfRelIds())!)!)
