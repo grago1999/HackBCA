@@ -57,8 +57,6 @@ class UserHandler {
                         if numOfRelIds != "0" {
                             for i in 0...(Int(numOfRelIds)!-1) {
                                 UserHandler.getRelId(authData.uid, index:i).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                                    print(UserHandler.getRelId(authData.uid, index:i))
-                                    print(snapshot.value)
                                     relIds.append(snapshot.value.objectForKey("id") as! String)
                                     continueUserSetup(authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:relIds, type:type)
                                     }, withCancelBlock: { error in
@@ -79,7 +77,7 @@ class UserHandler {
     static func continueUserSetup(id:String, email:String, pass:String, firstName:String, lastName:String, gender:String, dob:String, numOfRelIds:String, relIds:[String], type:String) {
         hasSetUser = true
         if type == "0" {
-            currentUser = Patient(id:id, email:email, pass:pass, firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:relIds)
+            currentUser = Patient(id:id, email:email, pass:pass, firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:[])
             UserHandler.getUserRef(id).observeSingleEventOfType(.Value, withBlock: { snapshot in
                 if let patient = currentUser as? Patient {
                     let numOfTestsStr = snapshot.value.objectForKey("numOfTests") as! String
@@ -178,31 +176,29 @@ class UserHandler {
     }
     
     static func addRelIdByEmail(email:String) {
-        if let _ = currentUser as? Patient {
-            UserHandler.getEmailId(email).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                let id = snapshot.value.objectForKey("id") as! String
-                UserHandler.getUserRef(id).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                    let numOfRelIdsStr = snapshot.value.objectForKey("numOfRelIds") as! String
-                    let relDict = ["id" : (currentUser?.getId())! as String]
-                    let userDict = [
-                        "firstName" : snapshot.value.objectForKey("firstName") as! String,
-                        "lastName" : snapshot.value.objectForKey("lastName") as! String,
-                        "numOfRelIds" : String(Int(numOfRelIdsStr)!+1) as String,
-                        "numOfTests" : snapshot.value.objectForKey("lastName") as! String,
-                        "type" : snapshot.value.objectForKey("type") as! String,
-                        "dob" : snapshot.value.objectForKey("dob") as! String,
-                        "gender" : snapshot.value.objectForKey("gender") as! String
-                    ]
-                    setNewRelId(id, index:Int(numOfRelIdsStr)!+1).setValue(relDict)
-                    setNewRelId((currentUser?.getId())!, index:Int((currentUser?.getNumOfRelIds())!)!)
-                    getUserRef(id).setValue(userDict)
-                }, withCancelBlock: { error in
-                    print(error.description)
-                })
+        UserHandler.getEmailId(email).observeSingleEventOfType(.Value, withBlock: { snapshot in
+            let id = snapshot.value.objectForKey("id") as! String
+            UserHandler.getUserRef(id).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                let numOfRelIdsStr = snapshot.value.objectForKey("numOfRelIds") as! String
+                let relDict = ["id" : (currentUser?.getId())! as String]
+                let userDict = [
+                    "firstName" : snapshot.value.objectForKey("firstName") as! String,
+                    "lastName" : snapshot.value.objectForKey("lastName") as! String,
+                    "numOfRelIds" : String(Int(numOfRelIdsStr)!+1) as String,
+                    "numOfTests" : snapshot.value.objectForKey("lastName") as! String,
+                    "type" : snapshot.value.objectForKey("type") as! String,
+                    "dob" : snapshot.value.objectForKey("dob") as! String,
+                    "gender" : snapshot.value.objectForKey("gender") as! String
+                ]
+                setNewRelId(id, index:Int(numOfRelIdsStr)!+1).setValue(relDict)
+                setNewRelId((currentUser?.getId())!, index:Int((currentUser?.getNumOfRelIds())!)!)
+                getUserRef(id).setValue(userDict)
             }, withCancelBlock: { error in
                 print(error.description)
             })
-        }
+        }, withCancelBlock: { error in
+            print(error.description)
+        })
     }
     
     static func alterEmail(email:String) -> String {

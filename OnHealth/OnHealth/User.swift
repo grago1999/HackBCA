@@ -32,7 +32,7 @@ class User {
         print("User: "+firstName+" "+lastName+" "+id)
     }
     
-    func getRelIds() -> [String] {
+    func getRelIds() -> [String] {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
         return relIds
     }
     
