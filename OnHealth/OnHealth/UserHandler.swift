@@ -104,7 +104,7 @@ class UserHandler {
                 ]
                 currentUser = User(id:uid!, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:"0", relIds:[])
                 hasSetUser = true
-                getEmailId(email).setValue(["id" : uid!])
+                getEmailId(alterEmail(email)).setValue(["id" : uid!])
                 updateUser(userDict, id:uid!)
                 self.attemptLogin(email, pass:pass)
             }
@@ -155,27 +155,29 @@ class UserHandler {
     }
     
     static func addRelIdByEmail(email:String) {
-        UserHandler.getEmailId(email).observeSingleEventOfType(.Value, withBlock: { snapshot in
-            let id = snapshot.value.objectForKey("id") as! String
-            UserHandler.getUserRef(id).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                let numOfRelIdsStr = snapshot.value.objectForKey("numOfRelIds") as! String
-                let relDict = ["id" : (currentUser?.getId())! as String]
-                let userDict = [
-                    "firstName" : snapshot.value.objectForKey("firstName") as! String,
-                    "lastName" : snapshot.value.objectForKey("lastName") as! String,
-                    "numOfRelIds" : String(Int(numOfRelIdsStr)!+1) as String,
-                    "numOfTests" : snapshot.value.objectForKey("lastName") as! String,
-                    "type" : snapshot.value.objectForKey("type") as! String,
-                ]
-                setNewRelId(id, index:Int(numOfRelIdsStr)!+1).setValue(relDict)
-                setNewRelId((currentUser?.getId())!, index:Int((currentUser?.getNumOfRelIds())!)!)
-                getUserRef(id).setValue(userDict)
+        if let _ = currentUser as? Patient {
+            UserHandler.getEmailId(email).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                let id = snapshot.value.objectForKey("id") as! String
+                UserHandler.getUserRef(id).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                    let numOfRelIdsStr = snapshot.value.objectForKey("numOfRelIds") as! String
+                    let relDict = ["id" : (currentUser?.getId())! as String]
+                    let userDict = [
+                        "firstName" : snapshot.value.objectForKey("firstName") as! String,
+                        "lastName" : snapshot.value.objectForKey("lastName") as! String,
+                        "numOfRelIds" : String(Int(numOfRelIdsStr)!+1) as String,
+                        "numOfTests" : snapshot.value.objectForKey("lastName") as! String,
+                        "type" : snapshot.value.objectForKey("type") as! String,
+                    ]
+                    setNewRelId(id, index:Int(numOfRelIdsStr)!+1).setValue(relDict)
+                    setNewRelId((currentUser?.getId())!, index:Int((currentUser?.getNumOfRelIds())!)!)
+                    getUserRef(id).setValue(userDict)
+                }, withCancelBlock: { error in
+                    print(error.description)
+                })
             }, withCancelBlock: { error in
                 print(error.description)
             })
-        }, withCancelBlock: { error in
-            print(error.description)
-        })
+        }
     }
     
     static func alterEmail(email:String) -> String {
