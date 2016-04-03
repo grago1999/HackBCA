@@ -84,17 +84,19 @@ class UserHandler {
                     let numOfTestsStr = snapshot.value.objectForKey("numOfTests") as! String
                     let numOfTests:Int? = Int(numOfTestsStr)
                     patient.setNumOfTests(numOfTests!)
-                    for testId in 0...patient.getNumOfPastTests()-1 {
-                        UserHandler.getPastTestRef(id, testId:testId).observeSingleEventOfType(.Value, withBlock: { snapshot in
-                            let score = snapshot.value.objectForKey("score") as! Int
-                            let date = snapshot.value.objectForKey("date") as! Int
-                            let type = snapshot.value.objectForKey("type") as! Int
-                            let testData = TestData(score:score, date:date, type:type)
-                            testDatas.append(testData)
-                            patient.setPastTests(testDatas)
-                        }, withCancelBlock: { error in
-                            print(error.description)
-                        })
+                    if patient.getNumOfPastTests() > 0 {
+                        for testId in 0...patient.getNumOfPastTests()-1 {
+                            UserHandler.getPastTestRef(id, testId:testId).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                                let score = snapshot.value.objectForKey("score") as! Int
+                                let date = snapshot.value.objectForKey("date") as! Int
+                                let type = snapshot.value.objectForKey("type") as! Int
+                                let testData = TestData(score:score, date:date, type:type)
+                                testDatas.append(testData)
+                                patient.setPastTests(testDatas)
+                            }, withCancelBlock: { error in
+                                print(error.description)
+                            })
+                        }
                     }
                 }
                 print(type)
@@ -135,14 +137,16 @@ class UserHandler {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
             getUserRef(id).setValue(userDict)
             if let patient = currentUser as? Patient {
-                for i in 0...patient.getNumOfPastTests()-1 {
+                var testArray: [[String : Int]] = []
+                for i in 0..<patient.getPastTests().count {
                     let testDict = [
                         "score" : patient.getPastTests()[i].getScore() as Int,
                         "date" : patient.getPastTests()[i].getDate() as Int,
                         "type" : patient.getPastTests()[i].getType() as Int
                     ]
-                    setNewPastTestRef(id).setValue(testDict)
+                    testArray.append(testDict)
                 }
+                getUserRef(id).childByAppendingPath("PastTests").setValue(testArray)
             }
             print("Updated user")
         })
@@ -158,6 +162,19 @@ class UserHandler {
             let dob = snapshot.value.objectForKey("dob") as! String
             let patient = Patient(id:id, email:"", pass:"", firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:[])
             patient.setNumOfTests(Int(numOfTests)!)
+            var testDatas:[TestData] = []
+            for testId in 0...patient.getNumOfPastTests() {
+                getPastTestRef(id, testId:testId).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                    let score = snapshot.value.objectForKey("score") as! Int
+                    let date = snapshot.value.objectForKey("date") as! Int
+                    let type = snapshot.value.objectForKey("type") as! Int
+                    let testData = TestData(score:score, date:date, type:type)
+                    testDatas.append(testData)
+                    patient.setPastTests(testDatas)
+                }, withCancelBlock: { error in
+                    print(error.description)
+                })
+            }
         }, withCancelBlock: { error in
             print(error.description)
         })
@@ -226,26 +243,27 @@ class UserHandler {
     static func sendTwillioAlert() {
         let twilioSID = "SK6188016aa946a7afc8786929acd7dcab"
         let twilioSecret = "QVTqy9AFcnRx3jJ87hCwTRKW15bPERbf"
-        let fromNumber = "+16094512077"
-        let toNumber = "+17188735824"
+        let fromNumber = "%2B16094512077"
+        let toNumber = "%2B17188735824"
         let message = "Twillio is dank memes"
         
-        // Build the request
-        let request = NSMutableURLRequest(URL: NSURL(string:"https://\(twilioSID):\(twilioSecret)@api.twilio.com/2010-04-01/Accounts/\(twilioSID)/SMS/Messages")!)
-        request.HTTPMethod = "POST"
-        request.HTTPBody = "From=\(fromNumber)&To=\(toNumber)&Body=\(message)".dataUsingEncoding(NSUTF8StringEncoding)
+        var swiftRequest = SwiftRequest();
         
-        // Build the completion block and send the request
-        NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: { (data, response, error) in
-            print("Finished")
-            if let data = data, responseDetails = NSString(data: data, encoding: NSUTF8StringEncoding) {
-                // Success
-                print("Response: \(responseDetails)")
-            } else {
-                // Failure
-                print("Error: \(error)")
-            }
-        }).resume()
+        var data = [
+            "To" : "+15555555555",
+            "From" : "+15555556666",
+            "Body" : "Hello World"
+        ];
+        
+        /*swiftRequest.post("https://api.twilio.com/2010-04-01/Accounts/[YOUR_ACCOUNT_SID]/Messages", auth: ["username" : "[YOUR_ACCOUNT_SID]", "password" : "YOUR_AUTH_TOKEN"]
+            data: data,
+            callback: {err, response, body in
+                if err == nil {
+                    println("Success: \(response)")
+                } else {
+                    println("Error: \(err)")
+                }
+        });*/
     }
     
 }
