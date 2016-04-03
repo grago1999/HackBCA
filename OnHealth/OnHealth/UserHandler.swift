@@ -120,7 +120,7 @@ class UserHandler {
     }
     
     static func getPastTestRef(id:String, testId:Int) -> Firebase {
-        return Firebase(url:"\(urlStr)/users/\(id)/PastTests/\(testId)")
+        return Firebase(url:"\(urlStr)/users/\(id)/PastTests/\(testId))")
     }
     
     static func getCareTakerIdsRef(id:String) -> Firebase {
