@@ -104,6 +104,7 @@ class UserHandler {
                 ]
                 currentUser = User(id:uid!, email:email, pass:pass, firstName:firstName, lastName:lastName, numOfRelIds:"0", relIds:[])
                 hasSetUser = true
+                getEmailId(email).setValue(["id" : uid!])
                 updateUser(userDict, id:uid!)
                 self.attemptLogin(email, pass:pass)
             }
@@ -120,9 +121,6 @@ class UserHandler {
                     "type" : (patient.getPastTests().last?.getType())! as Int
                 ]
                 setNewPastTestRef(id).setValue(newTestDict)
-            }
-            if let careTaker = currentUser as? CareTaker {
-                
             }
             print("Updated user")
         })
@@ -165,7 +163,7 @@ class UserHandler {
                 let userDict = [
                     "firstName" : snapshot.value.objectForKey("firstName") as! String,
                     "lastName" : snapshot.value.objectForKey("lastName") as! String,
-                    "numOfRelIds" : String(Int(numOfRelIdsStr)!+1) as! String,
+                    "numOfRelIds" : String(Int(numOfRelIdsStr)!+1) as String,
                     "numOfTests" : snapshot.value.objectForKey("lastName") as! String,
                     "type" : snapshot.value.objectForKey("type") as! String,
                 ]
