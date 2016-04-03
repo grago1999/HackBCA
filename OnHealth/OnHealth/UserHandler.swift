@@ -33,10 +33,9 @@ class UserHandler {
                 }
             } else {
                 print("Logged in")
-                let userRef = Firebase(url:"\(urlStr)/users/\(authData.uid)")
                 var firstName:String = ""
                 var lastName:String = ""
-                userRef.observeEventType(.Value, withBlock: { snapshot in
+                getUserRef(authData.uid).observeEventType(.Value, withBlock: { snapshot in
                     if let user = currentUser {
                         firstName = user.getFirstName()
                         lastName = user.getLastName()
@@ -58,7 +57,7 @@ class UserHandler {
         }
     }
     
-    static func registerUser(email:String, pass:String, firstName:String, lastName:String) {
+    static func registerUser(email:String, pass:String, firstName:String, lastName:String, type:Int) {
         ref.createUser(email, password:pass, withValueCompletionBlock: { error, result in
             if error != nil {
                 print("Account was unable to be created")
@@ -66,6 +65,7 @@ class UserHandler {
                 let uid = result["uid"] as? String
                 print("Successfully created user account with uid: \(uid)")
                 let userDict = [
+                    "type" : String(type),
                     "firstName" : firstName,
                     "lastName" : lastName
                 ]
@@ -81,6 +81,10 @@ class UserHandler {
             ref.childByAppendingPath("users").childByAppendingPath(ref.authData.uid).setValue(userDict)
             print("Updated user")
         })
+    }
+    
+    static func getUserRef(id:String) -> Firebase {
+        return Firebase(url:"\(urlStr)/users/\(id)")
     }
     
 }

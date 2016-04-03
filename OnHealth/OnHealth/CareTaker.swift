@@ -12,4 +12,12 @@ class CareTaker: User {
     
     private var patientIds:[String] = []
     
+    func getPatientTestData(patientId:String) {//-> [TestData] {
+        UserHandler.getUserRef(patientId).observeEventType(.Value, withBlock: { snapshot in
+            print(snapshot.value.objectForKey("TestData"))
+        }, withCancelBlock: { error in
+            print(error.description)
+        })
+    }
+    
 }

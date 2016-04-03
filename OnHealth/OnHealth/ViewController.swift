@@ -12,7 +12,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        UserHandler.registerUser("cool@wow.com", pass:"testtesttest", firstName:"jacob", lastName:"jobs")
+        UserHandler.attemptLogin("cool@wow.com", pass:"testtesttest")
         // Do any additional setup after loading the view, typically from a nib.
     }
 
