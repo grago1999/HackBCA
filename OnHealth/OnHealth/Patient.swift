@@ -14,29 +14,13 @@ class Patient: User {
     private var careTakerIds:[String] = []
     
     func updatePatientAfterNewTest(newTest:TestData) {
-        var newPastTests:[[String:Int]] = []
-        if self.getPastTests().count >= 0 {
-            for previousTest in self.getPastTests() {
-                let previousTestDict = [
-                    "score" : previousTest.getScore(),
-                    "date" : previousTest.getDate(),
-                    "type" : previousTest.getType()
-                ]
-                newPastTests.append(previousTestDict)
-            }
-        }
-        
-        let newTestDict = [
-            "score" : newTest.getScore(),
-            "date" : newTest.getDate(),
-            "type" : newTest.getType()
-        ]
-        newPastTests.append(newTestDict)
+        pastTests.append(newTest)
         let userDict = [
-            "pastTests" : newPastTests,
-            "careTakerIds" : self.getCareTakerIds()
+            "type" : "0",
+            "firstName" : self.getFirstName(),
+            "lastName" : self.getLastName()
         ]
-        UserHandler.updateUser(userDict as! [String : AnyObject], id:self.getId())
+        UserHandler.updateUser(userDict, id:self.getId())
     }
     
     func setCareTakerIds(careTakerIds:[String]) {

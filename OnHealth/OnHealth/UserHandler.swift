@@ -13,6 +13,7 @@ class UserHandler {
     static let urlStr = "https://hackbca-health.firebaseio.com"
     static let ref = Firebase(url:urlStr)
     static var currentUser:User?
+    static var hasSetUser = false
     
     static func attemptLogin(email:String, pass:String) {
         ref.authUser(email, password:pass) {
@@ -36,23 +37,24 @@ class UserHandler {
                 var type:String = ""
                 var firstName:String = ""
                 var lastName:String = ""
-                getUserRef(authData.uid).observeEventType(.Value, withBlock: { snapshot in
-                    if let user = currentUser {
-                        firstName = user.getFirstName()
-                        lastName = user.getLastName()
+                getUserRef(authData.uid).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                    if hasSetUser {
+                        firstName = (currentUser?.getFirstName())!
+                        lastName = (currentUser?.getLastName())!
                     } else {
                         type = snapshot.value.objectForKey("type") as! String
                         firstName = snapshot.value.objectForKey("firstName") as! String
                         lastName = snapshot.value.objectForKey("lastName") as! String
                     }
+                    hasSetUser = true
+                    if type == "0" {
+                        currentUser = Patient(id:authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName)
+                    } else {
+                        currentUser = CareTaker(id:authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName)
+                    }
                 }, withCancelBlock: { error in
                     print(error.description)
                 })
-                if type == "0" {
-                    currentUser = Patient(id:authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName)
-                } else {
-                    currentUser = CareTaker(id:authData.uid, email:email, pass:pass, firstName:firstName, lastName:lastName)
-                }
             }
         }
     }
@@ -70,6 +72,7 @@ class UserHandler {
                     "lastName" : lastName
                 ]
                 currentUser = User(id:uid!, email:email, pass:pass, firstName:firstName, lastName:lastName)
+                hasSetUser = true
                 updateUser(userDict, id:uid!)
                 self.attemptLogin(email, pass:pass)
             }
@@ -78,7 +81,17 @@ class UserHandler {
     
     static func updateUser(userDict:[String:AnyObject], id:String) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
-            ref.childByAppendingPath("users").childByAppendingPath(ref.authData.uid).setValue(userDict)
+            getUserRef(id).setValue(userDict)
+            if let patient = currentUser as? Patient {
+                let newTestDict = [
+                    "score" : (patient.getPastTests().last?.getScore())! as Int,
+                    "type" : (patient.getPastTests().last?.getType())! as Int
+                ]
+                getPastTestsRef(id, date:(patient.getPastTests().last?.getDate())!).setValue(newTestDict)
+            }
+            if let careTaker = currentUser as? CareTaker {
+                
+            }
             print("Updated user")
         })
     }
@@ -86,5 +99,18 @@ class UserHandler {
     static func getUserRef(id:String) -> Firebase {
         return Firebase(url:"\(urlStr)/users/\(id)")
     }
+    
+    static func getPastTestsRef(id:String, date:Int) -> Firebase {
+        return Firebase(url:"\(urlStr)/users/\(id)/PastTests/\(date))")
+    }
+    
+    static func getCareTakerIdsRef(id:String) -> Firebase {
+        return Firebase(url:"\(urlStr)/users/\(id)/CareTakerIds")
+    }
+    
+    static func getPatientIds(id:String) -> Firebase {
+        return Firebase(url:"\(urlStr)/users/\(id)/PatientIds")
+    }
+    
     
 }
