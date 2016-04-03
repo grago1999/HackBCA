@@ -15,6 +15,8 @@
 		9926F4501CB0733500326B3C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9926F44E1CB0733500326B3C /* LaunchScreen.storyboard */; };
 		997FCB911CB07E6900F948A1 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997FCB901CB07E6900F948A1 /* User.swift */; };
 		997FCB931CB07F7400F948A1 /* TestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997FCB921CB07F7400F948A1 /* TestData.swift */; };
+		997FCB951CB08FB600F948A1 /* Patient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997FCB941CB08FB600F948A1 /* Patient.swift */; };
+		997FCB971CB08FBF00F948A1 /* CareTaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997FCB961CB08FBF00F948A1 /* CareTaker.swift */; };
 		999D2FE71CB07558000DE1AF /* UserHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999D2FE61CB07558000DE1AF /* UserHandler.swift */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +31,8 @@
 		9926F4511CB0733500326B3C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		997FCB901CB07E6900F948A1 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		997FCB921CB07F7400F948A1 /* TestData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestData.swift; sourceTree = "<group>"; };
+		997FCB941CB08FB600F948A1 /* Patient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Patient.swift; sourceTree = "<group>"; };
+		997FCB961CB08FBF00F948A1 /* CareTaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CareTaker.swift; sourceTree = "<group>"; };
 		999D2FE61CB07558000DE1AF /* UserHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserHandler.swift; sourceTree = "<group>"; };
 		999D2FE81CB075AF000DE1AF /* OnHealth-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OnHealth-Bridging-Header.h"; sourceTree = "<group>"; };
 		9CD31C9A4AAE298C721A250C /* Pods-OnHealth.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OnHealth.release.xcconfig"; path = "Pods/Target Support Files/Pods-OnHealth/Pods-OnHealth.release.xcconfig"; sourceTree = "<group>"; };
@@ -73,6 +77,8 @@
 				9926F4491CB0733500326B3C /* Main.storyboard */,
 				999D2FE61CB07558000DE1AF /* UserHandler.swift */,
 				997FCB901CB07E6900F948A1 /* User.swift */,
+				997FCB941CB08FB600F948A1 /* Patient.swift */,
+				997FCB961CB08FBF00F948A1 /* CareTaker.swift */,
 				997FCB921CB07F7400F948A1 /* TestData.swift */,
 				9926F44C1CB0733500326B3C /* Assets.xcassets */,
 				9926F44E1CB0733500326B3C /* LaunchScreen.storyboard */,
@@ -226,6 +232,8 @@
 				999D2FE71CB07558000DE1AF /* UserHandler.swift in Sources */,
 				997FCB931CB07F7400F948A1 /* TestData.swift in Sources */,
 				9926F4461CB0733500326B3C /* AppDelegate.swift in Sources */,
+				997FCB951CB08FB600F948A1 /* Patient.swift in Sources */,
+				997FCB971CB08FBF00F948A1 /* CareTaker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

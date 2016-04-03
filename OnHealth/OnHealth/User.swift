@@ -13,31 +13,17 @@ class User {
     private var pass:String
     private var firstName:String
     private var lastName:String
-    private var pastTests:[TestData] = []
     
-    init(id:String, email:String, pass:String, firstName:String, lastName:String, pastTests:[TestData]) {
+    init(id:String, email:String, pass:String, firstName:String, lastName:String) {
         self.id = id
         self.email = email
         self.pass = pass
         self.firstName = firstName
         self.lastName = lastName
-        self.pastTests = pastTests
     }
     
-    func convToDict() -> [String:AnyObject] {
-        return [
-            "firstName" : firstName,
-            "lastName" : lastName,
-            "pastTests" : pastTests
-        ]
-    }
-    
-    func setPastTests(pastTests:[TestData]) {
-        self.pastTests = pastTests
-    }
-    
-    func getPastTests() -> [TestData] {
-        return pastTests
+    func getId() -> String {
+        return id
     }
     
 }
