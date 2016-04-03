@@ -32,6 +32,10 @@ class Patient: User {
         self.numOfTests = numOfTests
     }
     
+    func getNumOfPastTests() -> Int {
+        return numOfTests
+    }
+    
     func setPastTests(pastTests:[TestData]) {
         self.pastTests = pastTests
     }

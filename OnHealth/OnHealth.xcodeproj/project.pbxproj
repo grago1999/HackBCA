@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4905DD31873A4848D4EC5D8A /* libPods-OnHealth.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7518950D50192C34C9BB014E /* libPods-OnHealth.a */; };
 		9926F4461CB0733500326B3C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9926F4451CB0733500326B3C /* AppDelegate.swift */; };
 		9926F4481CB0733500326B3C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9926F4471CB0733500326B3C /* ViewController.swift */; };
 		9926F44B1CB0733500326B3C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9926F4491CB0733500326B3C /* Main.storyboard */; };
@@ -18,10 +17,10 @@
 		997FCB951CB08FB600F948A1 /* Patient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997FCB941CB08FB600F948A1 /* Patient.swift */; };
 		997FCB971CB08FBF00F948A1 /* CareTaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997FCB961CB08FBF00F948A1 /* CareTaker.swift */; };
 		999D2FE71CB07558000DE1AF /* UserHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 999D2FE61CB07558000DE1AF /* UserHandler.swift */; };
+		DB0084654EF85247B2AA9B00 /* libPods-OnHealth.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ACC3892F7A618EC3F5A648C8 /* libPods-OnHealth.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7518950D50192C34C9BB014E /* libPods-OnHealth.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OnHealth.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9926F4421CB0733500326B3C /* OnHealth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OnHealth.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9926F4451CB0733500326B3C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9926F4471CB0733500326B3C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -36,6 +35,7 @@
 		999D2FE61CB07558000DE1AF /* UserHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserHandler.swift; sourceTree = "<group>"; };
 		999D2FE81CB075AF000DE1AF /* OnHealth-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OnHealth-Bridging-Header.h"; sourceTree = "<group>"; };
 		9CD31C9A4AAE298C721A250C /* Pods-OnHealth.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OnHealth.release.xcconfig"; path = "Pods/Target Support Files/Pods-OnHealth/Pods-OnHealth.release.xcconfig"; sourceTree = "<group>"; };
+		ACC3892F7A618EC3F5A648C8 /* libPods-OnHealth.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-OnHealth.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8401C7372C00E8900D50243 /* Pods-OnHealth.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OnHealth.debug.xcconfig"; path = "Pods/Target Support Files/Pods-OnHealth/Pods-OnHealth.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -44,7 +44,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4905DD31873A4848D4EC5D8A /* libPods-OnHealth.a in Frameworks */,
+				DB0084654EF85247B2AA9B00 /* libPods-OnHealth.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,8 +79,8 @@
 				997FCB901CB07E6900F948A1 /* User.swift */,
 				997FCB941CB08FB600F948A1 /* Patient.swift */,
 				997FCB961CB08FBF00F948A1 /* CareTaker.swift */,
-				997FCB921CB07F7400F948A1 /* TestData.swift */,
 				9926F44C1CB0733500326B3C /* Assets.xcassets */,
+				997FCB921CB07F7400F948A1 /* TestData.swift */,
 				9926F44E1CB0733500326B3C /* LaunchScreen.storyboard */,
 				9926F4511CB0733500326B3C /* Info.plist */,
 				999D2FE81CB075AF000DE1AF /* OnHealth-Bridging-Header.h */,
@@ -100,7 +100,7 @@
 		F503DF2729978BCEA0F9B604 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				7518950D50192C34C9BB014E /* libPods-OnHealth.a */,
+				ACC3892F7A618EC3F5A648C8 /* libPods-OnHealth.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

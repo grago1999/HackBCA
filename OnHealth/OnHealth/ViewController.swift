@@ -12,8 +12,9 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        UserHandler.attemptLogin("me@example.com", pass:"testtesttest")
+        //UserHandler.attemptLogin("caretaker@test.com", pass:"testtesttest")
         // Do any additional setup after loading the view, typically from a nib.
+        UserHandler.sendTwillioAlert()
     }
 
     override func didReceiveMemoryWarning() {

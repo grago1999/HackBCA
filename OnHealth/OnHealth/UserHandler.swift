@@ -54,7 +54,7 @@ class UserHandler {
                         gender = snapshot.value.objectForKey("gender") as! String
                         dob = snapshot.value.objectForKey("dob") as! String
                         numOfRelIds = snapshot.value.objectForKey("numOfRelIds") as! String
-                        if numOfRelIds != "0" {
+                        if numOfRelIds != "0" && type == "1" {
                             for i in 0...(Int(numOfRelIds)!-1) {
                                 UserHandler.getRelId(authData.uid, index:i).observeSingleEventOfType(.Value, withBlock: { snapshot in
                                     relIds.append(snapshot.value.objectForKey("id") as! String)
@@ -77,13 +77,27 @@ class UserHandler {
     static func continueUserSetup(id:String, email:String, pass:String, firstName:String, lastName:String, gender:String, dob:String, numOfRelIds:String, relIds:[String], type:String) {
         hasSetUser = true
         if type == "0" {
-            currentUser = Patient(id:id, email:email, pass:pass, firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:[])
+            currentUser = Patient(id:id, email:email, pass:pass, firstName:firstName, lastName:lastName, gender:gender, dob:dob, numOfRelIds:numOfRelIds, relIds:relIds)
             UserHandler.getUserRef(id).observeSingleEventOfType(.Value, withBlock: { snapshot in
                 if let patient = currentUser as? Patient {
+                    var testDatas:[TestData] = []
                     let numOfTestsStr = snapshot.value.objectForKey("numOfTests") as! String
                     let numOfTests:Int? = Int(numOfTestsStr)
                     patient.setNumOfTests(numOfTests!)
+                    for testId in 0...patient.getNumOfPastTests()-1 {
+                        UserHandler.getPastTestRef(id, testId:testId).observeSingleEventOfType(.Value, withBlock: { snapshot in
+                            let score = snapshot.value.objectForKey("score") as! Int
+                            let date = snapshot.value.objectForKey("date") as! Int
+                            let type = snapshot.value.objectForKey("type") as! Int
+                            let testData = TestData(score:score, date:date, type:type)
+                            testDatas.append(testData)
+                            patient.setPastTests(testDatas)
+                        }, withCancelBlock: { error in
+                            print(error.description)
+                        })
+                    }
                 }
+                print(type)
             }, withCancelBlock: { error in
                 print(error.description)
             })
@@ -121,12 +135,14 @@ class UserHandler {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), {
             getUserRef(id).setValue(userDict)
             if let patient = currentUser as? Patient {
-                let newTestDict = [
-                    "score" : (patient.getPastTests().last?.getScore())! as Int,
-                    "date" : (patient.getPastTests().last?.getDate())! as Int,
-                    "type" : (patient.getPastTests().last?.getType())! as Int
-                ]
-                setNewPastTestRef(id).setValue(newTestDict)
+                for i in 0...patient.getNumOfPastTests()-1 {
+                    let testDict = [
+                        "score" : patient.getPastTests()[i].getScore() as Int,
+                        "date" : patient.getPastTests()[i].getDate() as Int,
+                        "type" : patient.getPastTests()[i].getType() as Int
+                    ]
+                    setNewPastTestRef(id).setValue(testDict)
+                }
             }
             print("Updated user")
         })
@@ -205,6 +221,31 @@ class UserHandler {
         var searchEmail = email.stringByReplacingOccurrencesOfString("@", withString: " ", options:NSStringCompareOptions.LiteralSearch, range:nil)
         searchEmail = searchEmail.stringByReplacingOccurrencesOfString(".", withString: " ", options:NSStringCompareOptions.LiteralSearch, range:nil)
         return searchEmail
+    }
+    
+    static func sendTwillioAlert() {
+        let twilioSID = "SK6188016aa946a7afc8786929acd7dcab"
+        let twilioSecret = "QVTqy9AFcnRx3jJ87hCwTRKW15bPERbf"
+        let fromNumber = "+16094512077"
+        let toNumber = "+17188735824"
+        let message = "Twillio is dank memes"
+        
+        // Build the request
+        let request = NSMutableURLRequest(URL: NSURL(string:"https://\(twilioSID):\(twilioSecret)@api.twilio.com/2010-04-01/Accounts/\(twilioSID)/SMS/Messages")!)
+        request.HTTPMethod = "POST"
+        request.HTTPBody = "From=\(fromNumber)&To=\(toNumber)&Body=\(message)".dataUsingEncoding(NSUTF8StringEncoding)
+        
+        // Build the completion block and send the request
+        NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: { (data, response, error) in
+            print("Finished")
+            if let data = data, responseDetails = NSString(data: data, encoding: NSUTF8StringEncoding) {
+                // Success
+                print("Response: \(responseDetails)")
+            } else {
+                // Failure
+                print("Error: \(error)")
+            }
+        }).resume()
     }
     
 }
