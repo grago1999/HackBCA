@@ -23,13 +23,8 @@ class User {
         
         print("User: "+firstName+" "+lastName+" "+id)
         
-        if let patient = self as? Patient {
-            let date = Int(NSDate().timeIntervalSince1970*1000)
-            let tempTest = TestData(score:80, date:date, type:0)
-            patient.updatePatientAfterNewTest(tempTest)
-        }
-        if let careTaker = self as? CareTaker {
-            careTaker.getPatientTestData(careTaker.getPatientIds()[0])
+        if let care = self as? CareTaker {
+            print(care.getPatientTestData(care.getPatientIds[0]))
         }
     }
     

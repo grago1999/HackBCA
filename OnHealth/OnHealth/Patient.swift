@@ -47,12 +47,3 @@ class Patient: User {
     }
     
 }
-
-/*
- let date = NSDate()
- let timestamp = Int(date.timeIntervalSince1970*1000)
- let tempTest = TestData(score:9, date:timestamp, type:1)
- if let patient = currentUser as? Patient {
- patient.updatePatientAfterNewTest(tempTest)
- }
- */
